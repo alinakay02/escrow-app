@@ -11,6 +11,17 @@ REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat ignition deploy ./ignition/modules/Lock.js
 
+git remote add origin https://github.com/alinakay02/escrow-app.git
+
+запуск:
+npx hardhat compile (из contracts)
+npx hardhat node (contracts)
+
+В другом терминале: 
+npx hardhat run scripts/deploy.js --network localhost
+
+
+
 # Деплой
 npx hardhat run scripts/deploy.js --network teth
 

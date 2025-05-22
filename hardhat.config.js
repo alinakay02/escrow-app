@@ -1,4 +1,3 @@
-require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 require("@nomiclabs/hardhat-ethers");
 
@@ -6,6 +5,12 @@ require("@nomiclabs/hardhat-ethers");
 module.exports = {
   solidity: "0.8.28",
 
+  paths: {
+    sources: "./contracts",
+    tests:    "./test",
+    scripts:  "./scripts"
+  },
+  
   networks: {
     teth: {
       url: process.env.TETH_RPC_URL,
