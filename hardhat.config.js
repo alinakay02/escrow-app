@@ -1,23 +1,13 @@
-require("dotenv").config();
-require("@nomiclabs/hardhat-ethers");
+require("@nomicfoundation/hardhat-toolbox");
+require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.28",
-
-  paths: {
-    sources: "./contracts",
-    tests:    "./test",
-    scripts:  "./scripts"
-  },
-  
+  solidity: "0.8.20",
   networks: {
-    teth: {
-      url: process.env.TETH_RPC_URL,
-      accounts: [process.env.PRIVATE_KEY]
-    },
-    localhost: {
-      url: "http://127.0.0.1:8545"
+    customTestnet: {
+      url: "http://93.95.97.136:8545",
+      accounts: [process.env.PRIVATE_KEY].filter(Boolean)
     }
   }
 };

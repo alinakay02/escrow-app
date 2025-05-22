@@ -1,26 +1,44 @@
+const hre = require("hardhat");
+
 async function main() {
-  const [deployer] = await ethers.getSigners();
-  console.log("Deploying from:", deployer.address);
+  console.log("Deploying contracts...");
 
-  // 1) SellerRating
-  const Rating = await ethers.getContractFactory("SellerRating");
-  const rating = await Rating.deploy();
-  await rating.deployed();
-  console.log("SellerRating:", rating.address);
+  // Deploy Factory
+  const EscrowFactory = await hre.ethers.getContractFactory("EscrowFactory");
+  const factory = await EscrowFactory.deploy();
+  await factory.waitForDeployment();
 
-  // 2) DisputeResolver
-  const Resolver = await ethers.getContractFactory("DisputeResolver");
-  const resolver = await Resolver.deploy(rating.address);
-  await resolver.deployed();
-  console.log("DisputeResolver:", resolver.address);
+  console.log("EscrowFactory deployed to:", await factory.getAddress());
 
-  // 3) EscrowFactory
-  const Factory = await ethers.getContractFactory("EscrowFactory");
-  const factory = await Factory.deploy(rating.address, resolver.address);
-  await factory.deployed();
-  console.log("EscrowFactory:", factory.address);
+  // Get deployed contract addresses
+  const [marketplaceAddr, userProfileAddr] = await factory.getContracts();
+  console.log("EscrowMarketplace deployed to:", marketplaceAddr);
+  console.log("UserProfile deployed to:", userProfileAddr);
 
+  // Verify contracts if not on local network
+  if (network.name !== "localhost" && network.name !== "hardhat") {
+    console.log("Verifying contracts...");
+    
+    await hre.run("verify:verify", {
+      address: await factory.getAddress(),
+      constructorArguments: [],
+    });
+
+    await hre.run("verify:verify", {
+      address: marketplaceAddr,
+      constructorArguments: [],
+    });
+
+    await hre.run("verify:verify", {
+      address: userProfileAddr,
+      constructorArguments: [],
+    });
+  }
 }
+
 main()
   .then(() => process.exit(0))
-  .catch(err => { console.error(err); process.exit(1); });
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
